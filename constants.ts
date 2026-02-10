@@ -52,16 +52,16 @@ export const SKILLS: SkillCategory[] = [
 ];
 
 export const EXPERIENCE: Experience[] = [
-  {
-    role: "Incoming Software Engineer Intern",
-    company: "Walmart Global Tech",
-    location: "Bentonville, AR",
-    date: "Summer 2026",
-    description: [
-      "Incoming intern for the Summer 2026 cohort",
-    ],
-    skills: ["something cool"]
-  },
+  // {
+  //   role: "Incoming Software Engineer Intern",
+  //   company: "Walmart Global Tech",
+  //   location: "Bentonville, AR",
+  //   date: "Summer 2026",
+  //   description: [
+  //     "Incoming intern for the Summer 2026 cohort",
+  //   ],
+  //   skills: ["something cool"]
+  // },
   {
     role: "Software Engineer Intern",
     company: "BigID",
