@@ -6,7 +6,8 @@ export const PERSONAL_INFO = {
   tagline: "Building scalable solutions & exploring the future of tech.",
   email: "derrickchen0201@gmail.com",
   website: "derrickchen.org",
-  resumeLink: "/derrick_chen_resume.pdf",
+  // resumeLink: "/derrick_chen_resume.pdf",
+  resumeLink: "/updated-resume-derrick.pdf"
 };
 
 export const SOCIAL_LINKS: SocialLink[] = [
