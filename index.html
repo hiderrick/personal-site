@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Derrick Chen · Software Engineer</title>
-  <meta name="description" content="Derrick Chen – Software Engineer & Georgia Tech CS student. Portfolio featuring experience at BigID, IBM, and Walmart Global Tech.">
+  <title>Derrick Chen Software Engineer</title>
+  <meta name="description" content="Derrick Chen Software Engineer & Georgia Tech CS student. Portfolio featuring experience at BigID, IBM, and Walmart Global Tech.">
   <style>
     * { margin: 0; padding: 0; outline: none !important; box-sizing: border-box; }
     canvas { display: block; outline: none !important; }
@@ -19,7 +19,7 @@
 
     :root {
       --cream: #ffffffee;
-      --cream-dim: #ffffff88;
+      --cream-dim: #ffffffbb;
       --dark: #2d3436;
       --accent: #ff8fa3;
       --accent2: #a5d8ff;
@@ -40,7 +40,7 @@
       overflow-x: hidden;
     }
 
-    /* ── Splash ── */
+    /* -- Splash -- */
     .splash {
       height: 100vh;
       display: flex;
@@ -65,9 +65,9 @@
 
     .splash .overline {
       font-family: 'Quicksand', sans-serif;
-      font-size: 0.7rem;
-      font-weight: 500;
-      letter-spacing: 0.5em;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.4em;
       text-transform: uppercase;
       color: var(--cream-dim);
       margin-bottom: 1.5rem;
@@ -85,31 +85,32 @@
       line-height: 0.95;
       margin-bottom: 1.5rem;
       color: white;
-      text-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      text-shadow: 0 2px 16px rgba(0,0,0,0.25);
     }
 
     .splash h1 span {
       display: block;
-      font-weight: 300;
+      font-weight: 400;
       font-size: 0.45em;
-      letter-spacing: 0.15em;
+      letter-spacing: 0.12em;
       color: var(--cream);
+      text-shadow: 0 1px 8px rgba(0,0,0,0.2);
     }
 
     .splash .subtitle {
       font-family: 'Quicksand', sans-serif;
-      font-size: clamp(0.85rem, 1.5vw, 1.1rem);
-      font-weight: 400;
-      letter-spacing: 0.2em;
-      color: rgba(255, 255, 255, 0.8);
+      font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      color: rgba(255, 255, 255, 0.9);
     }
 
     .splash .scroll-hint {
       margin-top: 3rem;
       font-family: 'Quicksand', sans-serif;
-      font-size: 0.65rem;
-      font-weight: 600;
-      letter-spacing: 0.4em;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.3em;
       text-transform: uppercase;
       color: white;
       background: #f08090;
@@ -126,7 +127,7 @@
       box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
 
-    /* ── Sections ── */
+    /* -- Sections -- */
     .sections {
       max-width: 600px;
       margin: 0 auto;
@@ -150,9 +151,9 @@
       align-items: center;
       gap: 0.5em;
       font-family: 'Quicksand', sans-serif;
-      font-size: 0.65rem;
-      font-weight: 600;
-      letter-spacing: 0.3em;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
       color: white;
       padding: 0.5em 1.2em;
@@ -176,11 +177,11 @@
       margin-bottom: 1.5rem;
       line-height: 1.2;
       color: white;
-      text-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      text-shadow: 0 2px 16px rgba(0,0,0,0.22);
     }
 
     .section p {
-      font-size: clamp(0.9rem, 1.5vw, 1.05rem);
+      font-size: clamp(0.95rem, 1.5vw, 1.1rem);
       line-height: 1.9;
       color: var(--cream-dim);
       max-width: 440px;
@@ -198,7 +199,7 @@
     .section:nth-child(3) .divider { background: var(--accent3); }
     .section:nth-child(4) .divider { background: var(--accent4); }
 
-    /* ── Tag list (awards, activities) ── */
+    /* -- Tag list (awards, activities) -- */
     .tag-list {
       display: flex;
       flex-wrap: wrap;
@@ -210,16 +211,16 @@
     }
 
     .tag-list li {
-      background: rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.18);
       color: white;
-      font-size: 0.7rem;
+      font-size: 0.8rem;
       font-weight: 600;
-      letter-spacing: 0.04em;
-      padding: 0.3em 0.9em;
+      letter-spacing: 0.03em;
+      padding: 0.35em 1em;
       border-radius: 20px;
     }
 
-    /* ── Job list ── */
+    /* -- Job list -- */
     .job-list {
       list-style: none;
       width: 100%;
@@ -242,22 +243,21 @@
       display: block;
       font-weight: 700;
       color: white;
-      font-size: 0.95rem;
-      margin-bottom: 0.15rem;
+      font-size: 1rem;
+      margin-bottom: 0.2rem;
     }
 
     .job-meta {
       display: block;
-      font-size: 0.75rem;
+      font-size: 0.82rem;
       color: var(--cream-dim);
-      opacity: 0.8;
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.45rem;
     }
 
     .job-note {
       display: block;
-      font-size: 0.82rem;
-      line-height: 1.6;
+      font-size: 0.9rem;
+      line-height: 1.65;
       color: var(--cream-dim);
     }
 
@@ -275,7 +275,7 @@
       vertical-align: middle;
     }
 
-    /* ── Project list ── */
+    /* -- Project list -- */
     .project-list {
       list-style: none;
       width: 100%;
@@ -298,7 +298,7 @@
       display: block;
       font-weight: 700;
       color: white;
-      font-size: 0.95rem;
+      font-size: 1rem;
       margin-bottom: 0.35rem;
       text-decoration: none;
       transition: opacity 0.2s;
@@ -310,21 +310,21 @@
     }
 
     .project-desc {
-      font-size: 0.82rem;
-      line-height: 1.6;
+      font-size: 0.9rem;
+      line-height: 1.65;
       color: var(--cream-dim);
       display: block;
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.5rem;
     }
 
     .project-stack {
       display: block;
-      font-size: 0.7rem;
-      color: rgba(255,255,255,0.5);
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.65);
       font-weight: 600;
     }
 
-    /* ── Skills grid ── */
+    /* -- Skills grid -- */
     .skills-grid {
       display: flex;
       flex-wrap: wrap;
@@ -335,16 +335,16 @@
     }
 
     .skill-pill {
-      background: rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.18);
       color: white;
-      font-size: 0.7rem;
-      padding: 0.3em 0.9em;
+      font-size: 0.8rem;
+      padding: 0.35em 1em;
       border-radius: 20px;
       font-weight: 600;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.04em;
     }
 
-    /* ── Contact links ── */
+    /* -- Contact links -- */
     .contact-links {
       display: flex;
       gap: 0.75rem;
@@ -357,10 +357,10 @@
     .contact-link {
       color: white;
       text-decoration: none;
-      font-size: 0.75rem;
+      font-size: 0.85rem;
       font-weight: 700;
-      letter-spacing: 0.08em;
-      padding: 0.55em 1.4em;
+      letter-spacing: 0.06em;
+      padding: 0.6em 1.5em;
       border-radius: 30px;
       background: rgba(255,255,255,0.2);
       transition: background 0.2s, transform 0.2s;
@@ -372,7 +372,7 @@
       transform: translateY(-2px);
     }
 
-    /* ── Finale ── */
+    /* -- Finale -- */
     .finale {
       min-height: 100vh;
       display: flex;
@@ -387,9 +387,9 @@
 
     .finale .overline {
       font-family: 'Quicksand', sans-serif;
-      font-size: 0.65rem;
+      font-size: 0.8rem;
       font-weight: 600;
-      letter-spacing: 0.5em;
+      letter-spacing: 0.4em;
       text-transform: uppercase;
       color: var(--cream-dim);
       margin-bottom: 1.5rem;
@@ -403,12 +403,12 @@
       letter-spacing: -0.02em;
       margin-bottom: 2rem;
       color: white;
-      text-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      text-shadow: 0 2px 16px rgba(0,0,0,0.22);
     }
 
     .finale p {
       font-family: 'Quicksand', sans-serif;
-      font-size: 1rem;
+      font-size: 1.05rem;
       line-height: 1.9;
       color: var(--cream-dim);
       max-width: 400px;
@@ -419,9 +419,9 @@
       margin-top: 2.5rem;
       padding: 0.9em 3em;
       font-family: 'Nunito', sans-serif;
-      font-size: 0.75rem;
+      font-size: 0.85rem;
       font-weight: 700;
-      letter-spacing: 0.2em;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
       color: white;
       background: var(--accent);
@@ -439,7 +439,7 @@
       box-shadow: 0 8px 25px rgba(255,143,163,0.45);
     }
 
-    /* ── Responsive ── */
+    /* -- Responsive -- */
     @media (max-width: 768px) {
       .section { padding: 4rem 0; }
     }
@@ -450,9 +450,9 @@
   <!-- Splash -->
   <section class="splash">
     <img class="avatar" src="/FloatingHead.png" alt="Derrick Chen">
-    <p class="overline">Software Engineer · Portfolio</p>
-    <h1>Derrick Chen<span>Building scalable solutions</span></h1>
-    <p class="subtitle">Georgia Tech CS · Class of 2027</p>
+    <p class="overline">Software Engineer</p>
+    <h1>Derrick Chen<span>building things that sometimes work</span></h1>
+    <p class="subtitle">Graduation: December 2027</p>
     <button class="scroll-hint" onclick="document.querySelector('.sections .section').scrollIntoView({ behavior: 'smooth' })">Explore</button>
   </section>
 
@@ -461,18 +461,17 @@
 
     <!-- Section 1: About Me -->
     <div class="section">
-      <div class="badge"><span class="icon">🎓</span> About Me</div>
-      <h2>Student &<br>Problem Solver</h2>
+      <div class="badge"><span class="icon"></span> About Me</div>
+      <h2>Student<br></h2>
       <div class="divider"></div>
       <p>
-        Georgia Institute of Technology · BS Computer Science<br>
-        Expected May 2027 · GPA 3.70<br><br>
-        Data Structures &amp; Algorithms · OS · Databases · Mobile/Web Dev
+        Georgia Institute of Technology BS Computer Science<br>
+        Expected December 2027 | GPA 3.70<br><br>
       </p>
       <ul class="tag-list">
-        <li>🏆 Coca-Cola First Gen Scholar</li>
-        <li>🏆 Zell Miller Scholar</li>
-        <li>Greek Life — Dir. Career Dev</li>
+        <li>Coca-Cola First Generation Scholar</li>
+        <li>Zell Miller Scholar</li>
+        <li>Greek Life - Dir. of Career Dev</li>
         <li>WebDev @ GT</li>
         <li>Blockchain @ GT</li>
         <li>Intramural Sports</li>
@@ -481,58 +480,61 @@
 
     <!-- Section 2: Experience -->
     <div class="section">
-      <div class="badge"><span class="icon">💼</span> Experience</div>
+      <div class="badge"><span class="icon"></span> Experience</div>
       <h2>Where I've<br>Worked</h2>
       <div class="divider"></div>
       <ul class="job-list">
-        <li>
-          <span class="job-role">Software Engineer Intern</span>
-          <span class="job-meta">BigID · Atlanta, GA · June – Aug 2025</span>
-          <span class="job-note">Built ETL pipelines in Node.js for AWS Security Lake, reducing data ingestion time by 100×. Achieved 80%+ Jest test coverage.</span>
-        </li>
-        <li>
-          <span class="job-role">Undergraduate Researcher</span>
-          <span class="job-meta">GROWER Research Lab · Atlanta, GA · Aug – Dec 2024</span>
-          <span class="job-note">Scraped &amp; analyzed 1M+ power outage records with Python/Pandas; collaborated with Oak Ridge National Laboratory.</span>
-        </li>
-        <li>
+
+          <li>
           <span class="job-role">Software Engineer Intern <span class="incoming-badge">Incoming</span></span>
-          <span class="job-meta">Walmart Global Tech · Bentonville, AR · Summer 2026</span>
+          <span class="job-meta">Walmart Global Tech Bentonville, AR Summer 2026</span>
         </li>
         <li>
           <span class="job-role">Software Developer Intern <span class="incoming-badge">Incoming</span></span>
-          <span class="job-meta">IBM · San Jose, CA · Fall 2026</span>
+          <span class="job-meta">IBM San Jose, CA Fall 2026</span>
         </li>
+
+        <li>
+          <span class="job-role">Software Engineer Intern</span>
+          <span class="job-meta">BigID Atlanta, GA June Aug 2025</span>
+          <span class="job-note">Built ETL pipelines in Node.js for AWS Security Lake, reducing data ingestion time by 100x. Achieved 80%+ Jest test coverage.</span>
+        </li>
+        <li>
+          <span class="job-role">Undergraduate Researcher</span>
+          <span class="job-meta">GROWER Research Lab Atlanta, GA Aug Dec 2024</span>
+          <span class="job-note">Scraped &amp; analyzed 1M+ power outage records with Python/Pandas; collaborated with Oak Ridge National Laboratory.</span>
+        </li>
+
       </ul>
     </div>
 
     <!-- Section 3: Projects -->
     <div class="section">
-      <div class="badge"><span class="icon">⚡</span> Projects</div>
+      <div class="badge"><span class="icon"></span> Projects</div>
       <h2>What I've<br>Built</h2>
       <div class="divider"></div>
       <ul class="project-list">
         <li>
-          <a class="project-name" href="https://gtnotes.org" target="_blank" rel="noopener">GT Notes ↗</a>
+          <a class="project-name" href="https://gtnotes.org" target="_blank" rel="noopener">GT Notes</a>
           <span class="project-desc">Fullstack note-sharing web app with 480+ users. JWT + OAuth 2.0 auth, PostgreSQL schema, AWS S3 file storage.</span>
-          <span class="project-stack">TypeScript · React · Node.js · AWS · PostgreSQL · Drizzle ORM</span>
+          <span class="project-stack">TypeScript React Node.js AWS PostgreSQL Drizzle ORM</span>
         </li>
         <li>
           <a class="project-name" href="javascript:void(0)">Movie Atlas</a>
           <span class="project-desc">Movie discovery platform with 10,000+ titles. 20% faster page loads via SSR; 66% reduced search latency via caching.</span>
-          <span class="project-stack">TypeScript · Next.js · TailwindCSS · TMDB API</span>
+          <span class="project-stack">TypeScript Next.js TailwindCSS TMDB API</span>
         </li>
         <li>
           <a class="project-name" href="javascript:void(0)">MedScan</a>
           <span class="project-desc">Flask web app integrating PyTorch TorchXRayVision for x-ray diagnosis. SQLite caching reduces repeat AI response time.</span>
-          <span class="project-stack">Python · Flask · PyTorch · SQLite</span>
+          <span class="project-stack">Python Flask PyTorch SQLite</span>
         </li>
       </ul>
     </div>
 
     <!-- Section 4: Skills & Contact -->
     <div class="section">
-      <div class="badge"><span class="icon">🛠</span> Skills &amp; Contact</div>
+      <div class="badge"><span class="icon"></span> Skills &amp; Contact</div>
       <h2>Tech Stack &<br>Get In Touch</h2>
       <div class="divider"></div>
       <div class="skills-grid">
@@ -564,10 +566,10 @@
 
   <!-- Finale -->
   <div class="finale">
-    <p class="overline">Ready to collaborate</p>
-    <h2>Let's<br>Connect.</h2>
-    <p>Always open to new opportunities, interesting problems, and good conversations. Reach out anytime.</p>
-    <a class="cta" href="mailto:derrickchen0201@gmail.com">Say Hello →</a>
+    <p class="overline"></p>
+    <h2>Let's<br>Connect !</h2>
+    <p></p>
+    <a class="cta" href="https://linkedin.com/in/chenderrick" target="_blank" rel="noopener">Say Hello</a>
   </div>
 
   <script type="module" src="/scene.js"></script>
