@@ -153,16 +153,78 @@ const blurDirectionU = uniform(params.blur * 10)
 const blurPass = gaussianBlur(traaGiAoSsr, blurDirectionU, 10)
 blurPass.textureNode = convertToTexture(traaGiAoSsr)
 
+// ─── Quality Tiers ──────────────────────────────────────────────────────────
+// Medium: AO only (no GI), reduced SSR
+const compositeMedium = vec4(
+  scenePassColor.rgb.mul(ao).add(ssrMasked),
+  scenePassColor.a,
+)
+const traaMedium = traa(compositeMedium, scenePassDepth, scenePassVelocity, camera)
+const blurPassMedium = gaussianBlur(traaMedium, blurDirectionU, 10)
+blurPassMedium.textureNode = convertToTexture(traaMedium)
+
+// Low: raw scene output, no post-processing
+const compositeLow = vec4(scenePassColor.rgb, scenePassColor.a)
+
+let qualityTier = 'high'
+let frameCount = 0
+let qualityDetected = false
+let fpsAccum = 0
+const DETECTION_FRAMES = 120
+
+// Per-tier output nodes (blur on / blur off)
+const tierOutputs = {
+  high:   { blur: blurPass,       noblur: traaGiAoSsr },
+  medium: { blur: blurPassMedium, noblur: traaMedium },
+  low:    { blur: compositeLow,   noblur: compositeLow },
+}
+
 // Start with blur bypassed (blur is 0)
 let blurActive = params.blur > 0
-renderPipeline.outputNode = blurActive ? blurPass : traaGiAoSsr
+renderPipeline.outputNode = blurActive ? tierOutputs.high.blur : tierOutputs.high.noblur
 renderPipeline.needsUpdate = true
 
 function setBlurActive(active) {
   if (active === blurActive) return
   blurActive = active
-  renderPipeline.outputNode = active ? blurPass : traaGiAoSsr
+  const out = tierOutputs[qualityTier]
+  renderPipeline.outputNode = active ? out.blur : out.noblur
   renderPipeline.needsUpdate = true
+}
+
+function applyQualityTier() {
+  // Post-processing
+  if (qualityTier === 'medium') {
+    giPass.giEnabled = false
+    ssrPass.quality.value = 0.2
+    ssrPass.maxDistance.value = 30
+  } else if (qualityTier === 'low') {
+    giPass.giEnabled = false
+    giPass.aoEnabled = false
+    ssrPass.enabled = false
+  }
+
+  // Shadow quality
+  if (qualityTier === 'medium') {
+    sunLight.shadow.mapSize.set(512, 512)
+    sunLight.shadow.blurSamples = 8
+    sunLight.shadow.radius = 4
+    sunLight.shadow.map?.dispose()
+    sunLight.shadow.map = null
+  } else if (qualityTier === 'low') {
+    sunLight.shadow.mapSize.set(512, 512)
+    sunLight.shadow.blurSamples = 4
+    sunLight.shadow.radius = 2
+    sunLight.shadow.map?.dispose()
+    sunLight.shadow.map = null
+  }
+
+  // Swap render pipeline output
+  const out = tierOutputs[qualityTier]
+  renderPipeline.outputNode = blurActive ? out.blur : out.noblur
+  renderPipeline.needsUpdate = true
+
+  console.log(`[perf] quality tier: ${qualityTier}`)
 }
 
 // ─── Debug ──────────────────────────────────────────────────────────────────
@@ -342,11 +404,12 @@ let deferredInitDone = false
 function deferredInit() {
   if (deferredInitDone) return
   deferredInitDone = true
+  const waterRes = qualityTier === 'low' ? 64 : 128
   waterPlane = new WaterPlane(scene, renderer, {
     sizeX: 80, sizeZ: 80, center: waterCenter,
     color: '#0088dd', metalness: 0.05, roughness: 0.08,
     fresnelBias: 0.25, fresnelPower: 1.5, fresnelScale: 1.2,
-    resolution: 128, viscosity: 0.6, damping: 0, speed: 0.97,
+    resolution: waterRes, viscosity: 0.6, damping: 0, speed: 0.97,
     mouseDeep: 0.04, mouseSize: 1.2, colliderStrength: 0.002,
     noiseAmplitude: 0.117, noiseFrequency: 4, noiseSpeed: 1.2,
   })
@@ -656,6 +719,8 @@ cloudInstancedMesh.receiveShadow = false
 const cloudInstanceData = [] // per cloud: { baseX, baseY, speed, drift, indices[] }
 const _cm = new THREE.Matrix4()
 const _cq = new THREE.Quaternion()
+const _tmpPos = new THREE.Vector3()
+const _tmpScale = new THREE.Vector3()
 let cloudIdx = 0
 
 for (let c = 0; c < cloudDefs.length; c++) {
@@ -675,6 +740,7 @@ for (let c = 0; c < cloudDefs.length; c++) {
   cloudInstanceData.push({
     baseX: cd.x,
     baseY: cd.y,
+    defZ: cd.z,
     speed: 0.15 + Math.random() * 0.2,
     drift: Math.random() * Math.PI * 2,
     indices,
@@ -844,6 +910,20 @@ const colliderPos = new THREE.Vector3(0, 5, 0) // reusable collider position
 async function animate() {
   const dt = Math.min(clock.getDelta(), 0.05)
   const t = clock.elapsedTime
+  frameCount++
+
+  // Adaptive quality detection — measure FPS over first 120 frames
+  if (!qualityDetected && frameCount > 10) { // skip first 10 frames (init jitter)
+    fpsAccum += dt
+    if (frameCount - 10 >= DETECTION_FRAMES) {
+      const avgFps = DETECTION_FRAMES / fpsAccum
+      if (avgFps < 30) qualityTier = 'low'
+      else if (avgFps < 50) qualityTier = 'medium'
+      qualityDetected = true
+      if (qualityTier !== 'high') applyQualityTier()
+      console.log(`[perf] detected ${Math.round(avgFps)} fps → tier: ${qualityTier}`)
+    }
+  }
 
   controls.update()
 
@@ -886,49 +966,53 @@ async function animate() {
     b.mesh.position.y = b.baseY + Math.sin(t * b.speed + b.phase) * b.amplitude
   }
 
-  // Drifting clouds (instanced)
-  for (const c of cloudInstanceData) {
-    const dx = Math.sin(t * c.speed + c.drift) * 1.5
-    const dy = Math.sin(t * c.speed * 0.7 + c.drift + 1) * 0.3
-    for (let j = 0; j < c.indices.length; j++) {
-      const sub = cloudSubParts[j]
-      const idx = c.indices[j]
-      _cm.compose(
-        new THREE.Vector3(
+  // Drifting clouds (instanced) — throttled on low tier
+  if (qualityTier !== 'low' || frameCount % 3 === 0) {
+    for (const c of cloudInstanceData) {
+      const dx = Math.sin(t * c.speed + c.drift) * 1.5
+      const dy = Math.sin(t * c.speed * 0.7 + c.drift + 1) * 0.3
+      for (let j = 0; j < c.indices.length; j++) {
+        const sub = cloudSubParts[j]
+        const idx = c.indices[j]
+        _tmpPos.set(
           c.baseX + sub.ox * c.s + dx,
           c.baseY + sub.oy * c.s + dy,
-          cloudDefs[cloudInstanceData.indexOf(c)].z + sub.oz * c.s
-        ),
-        _cq,
-        new THREE.Vector3(sub.sx * c.s, sub.sy * c.s, sub.sz * c.s)
-      )
-      cloudInstancedMesh.setMatrixAt(idx, _cm)
+          c.defZ + sub.oz * c.s
+        )
+        _tmpScale.set(sub.sx * c.s, sub.sy * c.s, sub.sz * c.s)
+        _cm.compose(_tmpPos, _cq, _tmpScale)
+        cloudInstancedMesh.setMatrixAt(idx, _cm)
+      }
     }
+    cloudInstancedMesh.instanceMatrix.needsUpdate = true
   }
-  cloudInstancedMesh.instanceMatrix.needsUpdate = true
 
-  // Sea floaters (instanced)
-  for (let i = 0; i < seaFloaterCount; i++) {
-    const sf = seaFloaterData[i]
-    const y = sf.baseY + Math.sin(t * sf.speed + sf.phase) * sf.amplitude
-    _fm.compose(
-      new THREE.Vector3(sf.x, y, sf.z),
-      _cq,
-      new THREE.Vector3(sf.s, sf.s, sf.s)
-    )
-    seaFloaterMesh.setMatrixAt(i, _fm)
+  // Sea floaters (instanced) — throttled on low tier
+  if (qualityTier !== 'low' || frameCount % 3 === 0) {
+    for (let i = 0; i < seaFloaterCount; i++) {
+      const sf = seaFloaterData[i]
+      const y = sf.baseY + Math.sin(t * sf.speed + sf.phase) * sf.amplitude
+      _tmpPos.set(sf.x, y, sf.z)
+      _tmpScale.set(sf.s, sf.s, sf.s)
+      _fm.compose(_tmpPos, _cq, _tmpScale)
+      seaFloaterMesh.setMatrixAt(i, _fm)
+    }
+    seaFloaterMesh.instanceMatrix.needsUpdate = true
   }
-  seaFloaterMesh.instanceMatrix.needsUpdate = true
 
   camera.updateMatrixWorld()
 
-  if (!deferredInitDone) {
+  if (!deferredInitDone && qualityDetected) {
     deferredInit()
   }
 
-  // Water compute — every frame for smooth visuals
+  // Water compute — throttled on lower tiers
   if (waterPlane) {
-    waterPlane.update(mouseActive ? mouseNDC : mouseNDCIdle, camera, colliderPos, 0)
+    const shouldUpdateWater = qualityTier === 'high' || (qualityTier === 'medium' && frameCount % 2 === 0) || (qualityTier === 'low' && frameCount % 2 === 0)
+    if (shouldUpdateWater) {
+      const mouseInput = (qualityTier === 'low' || !mouseActive) ? mouseNDCIdle : mouseNDC
+      waterPlane.update(mouseInput, camera, colliderPos, 0)
+    }
   }
 
   renderPipeline.render()
