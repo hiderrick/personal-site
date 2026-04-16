@@ -47,5 +47,5 @@ All portfolio content lives in **`index.html`** — there is no separate data/co
 
 `/public/` — served at root:
 - `FloatingHead.png` — headshot used in splash
-- `updated-resume-derrick.pdf` — linked from Skills & Contact section
+- `derrick_chen_resume.pdf` — linked from Skills & Contact section
 - `georgia-tech-logo.png` — unused but preserved
