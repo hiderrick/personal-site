@@ -43,6 +43,95 @@
       overflow-x: hidden;
     }
 
+    /* -- Loading screen -- */
+    .site-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      color: white;
+      background:
+        radial-gradient(circle at 50% 35%, rgba(255,255,255,0.35), transparent 30rem),
+        linear-gradient(180deg, rgba(168,216,234,0.92), rgba(255,236,210,0.86));
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.45s ease, visibility 0.45s ease;
+    }
+
+    .site-loader__card {
+      width: min(100%, 320px);
+      padding: 2rem;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.45);
+      border-radius: 28px;
+      background: rgba(255,255,255,0.18);
+      box-shadow: 0 20px 60px rgba(45,52,54,0.16);
+      transition: transform 0.45s ease;
+    }
+
+    .site-loader__spinner {
+      width: 42px;
+      height: 42px;
+      margin: 0 auto 1.25rem;
+      border: 3px solid rgba(255,255,255,0.35);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: loader-spin 0.9s linear infinite;
+    }
+
+    .site-loader__title {
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin-bottom: 0.4rem;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.18);
+    }
+
+    .site-loader__text {
+      font-size: 0.9rem;
+      font-weight: 600;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.88);
+    }
+
+    .site-loader--error .site-loader__spinner {
+      display: none;
+    }
+
+    .site-loader--error .site-loader__card {
+      background: rgba(45,52,54,0.42);
+    }
+
+    body.scene-ready .site-loader {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    body.scene-ready .site-loader__card {
+      transform: translateY(-8px);
+    }
+
+    @keyframes loader-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .site-loader,
+      .site-loader__card {
+        transition: none;
+      }
+
+      .site-loader__spinner {
+        animation: none;
+      }
+    }
+
     /* -- Splash -- */
     .splash {
       height: 100vh;
@@ -149,6 +238,18 @@
       pointer-events: none;
     }
 
+    .section-panel,
+    .finale-panel {
+      width: min(100%, 560px);
+      padding: clamp(2rem, 4vw, 3rem) clamp(1.4rem, 3.5vw, 2.5rem);
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 28px;
+      background: rgba(31, 45, 54, 0.34);
+      backdrop-filter: blur(14px) saturate(125%);
+      -webkit-backdrop-filter: blur(14px) saturate(125%);
+      box-shadow: 0 20px 60px rgba(21,31,38,0.16);
+    }
+
     .section .badge {
       display: inline-flex;
       align-items: center;
@@ -184,10 +285,10 @@
     }
 
     .section p {
-      font-size: clamp(0.95rem, 1.5vw, 1.1rem);
+      font-size: clamp(1.05rem, 1.7vw, 1.2rem);
       line-height: 1.9;
       color: var(--cream-dim);
-      max-width: 440px;
+      max-width: 480px;
     }
 
     .section .divider {
@@ -208,7 +309,7 @@
       flex-wrap: wrap;
       gap: 0.4rem;
       justify-content: center;
-      max-width: 440px;
+      max-width: 480px;
       margin: 1rem auto 0;
       list-style: none;
     }
@@ -216,7 +317,7 @@
     .tag-list li {
       background: rgba(255,255,255,0.18);
       color: white;
-      font-size: 0.8rem;
+      font-size: 0.86rem;
       font-weight: 600;
       letter-spacing: 0.03em;
       padding: 0.35em 1em;
@@ -227,7 +328,7 @@
     .job-list {
       list-style: none;
       width: 100%;
-      max-width: 440px;
+      max-width: 480px;
       text-align: left;
     }
 
@@ -246,20 +347,20 @@
       display: block;
       font-weight: 700;
       color: white;
-      font-size: 1rem;
+      font-size: 1.08rem;
       margin-bottom: 0.2rem;
     }
 
     .job-meta {
       display: block;
-      font-size: 0.82rem;
+      font-size: 0.9rem;
       color: var(--cream-dim);
       margin-bottom: 0.45rem;
     }
 
     .job-note {
       display: block;
-      font-size: 0.9rem;
+      font-size: 0.98rem;
       line-height: 1.65;
       color: var(--cream-dim);
     }
@@ -282,7 +383,7 @@
     .project-list {
       list-style: none;
       width: 100%;
-      max-width: 440px;
+      max-width: 480px;
       text-align: left;
     }
 
@@ -301,7 +402,7 @@
       display: block;
       font-weight: 700;
       color: white;
-      font-size: 1rem;
+      font-size: 1.08rem;
       margin-bottom: 0.35rem;
       text-decoration: none;
       transition: opacity 0.2s;
@@ -313,7 +414,7 @@
     }
 
     .project-desc {
-      font-size: 0.9rem;
+      font-size: 0.98rem;
       line-height: 1.65;
       color: var(--cream-dim);
       display: block;
@@ -322,7 +423,7 @@
 
     .project-stack {
       display: block;
-      font-size: 0.78rem;
+      font-size: 0.84rem;
       color: rgba(255,255,255,0.65);
       font-weight: 600;
     }
@@ -333,14 +434,14 @@
       flex-wrap: wrap;
       gap: 0.4rem;
       justify-content: center;
-      max-width: 440px;
+      max-width: 480px;
       margin: 0 auto 2rem;
     }
 
     .skill-pill {
       background: rgba(255,255,255,0.18);
       color: white;
-      font-size: 0.8rem;
+      font-size: 0.86rem;
       padding: 0.35em 1em;
       border-radius: 20px;
       font-weight: 600;
@@ -360,7 +461,7 @@
     .contact-link {
       color: white;
       text-decoration: none;
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       font-weight: 700;
       letter-spacing: 0.06em;
       padding: 0.6em 1.5em;
@@ -411,7 +512,7 @@
 
     .finale p {
       font-family: 'Quicksand', sans-serif;
-      font-size: 1.05rem;
+      font-size: 1.12rem;
       line-height: 1.9;
       color: var(--cream-dim);
       max-width: 400px;
@@ -481,17 +582,22 @@
       }
 
       .section {
-        padding: 3rem 0;
-        background: rgba(0, 0, 0, 0.25);
-        backdrop-filter: blur(6px);
-        -webkit-backdrop-filter: blur(6px);
-        border-radius: 16px;
-        padding: 2.5rem 1.2rem;
+        padding: 2.5rem 0;
         margin-bottom: 1rem;
       }
 
+      .section-panel,
+      .finale-panel {
+        width: 100%;
+        padding: 2.5rem 1.2rem;
+        border-radius: 16px;
+        background: rgba(0, 0, 0, 0.28);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+      }
+
       .section p {
-        font-size: 0.95rem;
+        font-size: 1rem;
         line-height: 1.75;
         color: #ffffffdd;
       }
@@ -500,16 +606,16 @@
         font-size: clamp(1.5rem, 5vw, 2.2rem);
       }
 
-      .job-role { font-size: 0.95rem; }
-      .job-meta { font-size: 0.8rem; }
-      .job-note { font-size: 0.85rem; line-height: 1.6; }
+      .job-role { font-size: 1rem; }
+      .job-meta { font-size: 0.85rem; }
+      .job-note { font-size: 0.9rem; line-height: 1.6; }
 
-      .project-name { font-size: 0.95rem; }
-      .project-desc { font-size: 0.85rem; line-height: 1.6; }
-      .project-stack { font-size: 0.75rem; }
+      .project-name { font-size: 1rem; }
+      .project-desc { font-size: 0.9rem; line-height: 1.6; }
+      .project-stack { font-size: 0.78rem; }
 
-      .skill-pill { font-size: 0.75rem; padding: 0.3em 0.8em; }
-      .tag-list li { font-size: 0.75rem; padding: 0.3em 0.8em; }
+      .skill-pill { font-size: 0.78rem; padding: 0.3em 0.8em; }
+      .tag-list li { font-size: 0.78rem; padding: 0.3em 0.8em; }
 
       .splash h1 {
         font-size: clamp(2.5rem, 12vw, 4rem);
@@ -547,6 +653,11 @@
       }
 
       .section {
+        padding: 2rem 0;
+      }
+
+      .section-panel,
+      .finale-panel {
         padding: 2rem 1rem;
       }
 
@@ -562,6 +673,49 @@
   </style>
 </head>
 <body>
+
+  <div class="site-loader" role="status" aria-live="polite" aria-label="Loading 3D portfolio">
+    <div class="site-loader__card">
+      <div class="site-loader__spinner" aria-hidden="true"></div>
+      <p class="site-loader__title">Loading island</p>
+      <p class="site-loader__text">Preparing the 3D scene for your visit.</p>
+    </div>
+  </div>
+
+  <script>
+    window.setPortfolioLoadState = function setPortfolioLoadState(state, message) {
+      const loader = document.querySelector('.site-loader')
+      if (!loader) return
+
+      if (state === 'ready') {
+        document.body.classList.add('scene-ready')
+        loader.setAttribute('aria-hidden', 'true')
+        return
+      }
+
+      if (state === 'error') {
+        loader.classList.add('site-loader--error')
+        loader.querySelector('.site-loader__title').textContent = '3D scene unavailable'
+        loader.querySelector('.site-loader__text').textContent = message || 'This portfolio needs WebGPU. Please open it in Chrome or Edge with WebGPU enabled.'
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!navigator.gpu) {
+        window.setPortfolioLoadState('error')
+      }
+    })
+
+    window.addEventListener('error', (event) => {
+      if (event.filename && event.filename.includes('scene.js')) {
+        window.setPortfolioLoadState('error')
+      }
+    })
+
+    window.addEventListener('unhandledrejection', () => {
+      window.setPortfolioLoadState('error')
+    })
+  </script>
 
   <nav class="fixed-nav">
     <a class="nav-link" href="https://github.com/hiderrick" target="_blank" rel="noopener">GitHub</a>
@@ -584,104 +738,112 @@
 
     <!-- Section 1: About Me -->
     <div class="section">
-      <div class="badge"><span class="icon"></span> About Me</div>
-      <h2>Student<br></h2>
-      <div class="divider"></div>
-      <p>
-        Georgia Institute of Technology BS Computer Science<br>
-        Expected December 2027 | GPA 3.70<br><br>
-      </p>
-      <ul class="tag-list">
-        <li>Coca-Cola First Generation Scholar</li>
-        <li>Zell Miller Scholar</li>
-        <li>Greek Life - Dir. of Career Dev</li>
-        <li>WebDev @ GT</li>
-        <li>Blockchain @ GT</li>
-        <li>Intramural Sports</li>
-      </ul>
+      <div class="section-panel">
+        <div class="badge"><span class="icon"></span> About Me</div>
+        <h2>Student<br></h2>
+        <div class="divider"></div>
+        <p>
+          Georgia Institute of Technology BS Computer Science<br>
+          Expected December 2027 | GPA 3.70<br><br>
+        </p>
+        <ul class="tag-list">
+          <li>Coca-Cola First Generation Scholar</li>
+          <li>Zell Miller Scholar</li>
+          <li>Greek Life - Dir. of Career Dev</li>
+          <li>WebDev @ GT</li>
+          <li>Blockchain @ GT</li>
+          <li>Intramural Sports</li>
+        </ul>
+      </div>
     </div>
 
     <!-- Section 2: Experience -->
     <div class="section">
-      <div class="badge"><span class="icon"></span> Experience</div>
-      <h2>Where I've<br>Worked</h2>
-      <div class="divider"></div>
-      <ul class="job-list">
+      <div class="section-panel">
+        <div class="badge"><span class="icon"></span> Experience</div>
+        <h2>Where I've<br>Worked</h2>
+        <div class="divider"></div>
+        <ul class="job-list">
 
           <li>
-          <span class="job-role">Software Engineer Intern <span class="incoming-badge">Incoming</span></span>
-          <span class="job-meta">Walmart Global Tech Bentonville, AR Summer 2026</span>
-        </li>
-        <li>
-          <span class="job-role">Software Developer Intern <span class="incoming-badge">Incoming</span></span>
-          <span class="job-meta">IBM San Jose, CA Fall 2026</span>
-        </li>
+            <span class="job-role">Software Engineer Intern <span class="incoming-badge">Incoming</span></span>
+            <span class="job-meta">Walmart Global Tech Bentonville, AR Summer 2026</span>
+          </li>
+          <li>
+            <span class="job-role">Software Developer Intern <span class="incoming-badge">Incoming</span></span>
+            <span class="job-meta">IBM San Jose, CA Fall 2026</span>
+          </li>
 
-        <li>
-          <span class="job-role">Software Engineer Intern</span>
-          <span class="job-meta">BigID Atlanta, GA June Aug 2025</span>
-          <span class="job-note">Built ETL pipelines in Node.js for AWS Security Lake, reducing data ingestion time by 100x. Achieved 80%+ Jest test coverage.</span>
-        </li>
-        <li>
-          <span class="job-role">Undergraduate Researcher</span>
-          <span class="job-meta">GROWER Research Lab Atlanta, GA Aug Dec 2024</span>
-          <span class="job-note">Scraped &amp; analyzed 1M+ power outage records with Python/Pandas; collaborated with Oak Ridge National Laboratory.</span>
-        </li>
+          <li>
+            <span class="job-role">Software Engineer Intern</span>
+            <span class="job-meta">BigID Atlanta, GA June Aug 2025</span>
+            <span class="job-note">Built ETL pipelines in Node.js for AWS Security Lake, reducing data ingestion time by 100x. Achieved 80%+ Jest test coverage.</span>
+          </li>
+          <li>
+            <span class="job-role">Undergraduate Researcher</span>
+            <span class="job-meta">GROWER Research Lab Atlanta, GA Aug Dec 2024</span>
+            <span class="job-note">Scraped &amp; analyzed 1M+ power outage records with Python/Pandas; collaborated with Oak Ridge National Laboratory.</span>
+          </li>
 
-      </ul>
+        </ul>
+      </div>
     </div>
 
     <!-- Section 3: Projects -->
     <div class="section">
-      <div class="badge"><span class="icon"></span> Projects</div>
-      <h2>What I've<br>Built</h2>
-      <div class="divider"></div>
-      <ul class="project-list">
-        <li>
-          <a class="project-name" href="https://gtnotes.org" target="_blank" rel="noopener">GT Notes</a>
-          <span class="project-desc">Fullstack note-sharing web app with 480+ users. JWT + OAuth 2.0 auth, PostgreSQL schema, AWS S3 file storage.</span>
-          <span class="project-stack">TypeScript React Node.js AWS PostgreSQL Drizzle ORM</span>
-        </li>
-        <li>
-          <a class="project-name" href="javascript:void(0)">Movie Atlas</a>
-          <span class="project-desc">Movie discovery platform with 10,000+ titles. 20% faster page loads via SSR; 66% reduced search latency via caching.</span>
-          <span class="project-stack">TypeScript Next.js TailwindCSS TMDB API</span>
-        </li>
-        <li>
-          <a class="project-name" href="javascript:void(0)">MedScan</a>
-          <span class="project-desc">Flask web app integrating PyTorch TorchXRayVision for x-ray diagnosis. SQLite caching reduces repeat AI response time.</span>
-          <span class="project-stack">Python Flask PyTorch SQLite</span>
-        </li>
-      </ul>
+      <div class="section-panel">
+        <div class="badge"><span class="icon"></span> Projects</div>
+        <h2>What I've<br>Built</h2>
+        <div class="divider"></div>
+        <ul class="project-list">
+          <li>
+            <a class="project-name" href="https://gtnotes.org" target="_blank" rel="noopener">GT Notes</a>
+            <span class="project-desc">Fullstack note-sharing web app with 480+ users. JWT + OAuth 2.0 auth, PostgreSQL schema, AWS S3 file storage.</span>
+            <span class="project-stack">TypeScript React Node.js AWS PostgreSQL Drizzle ORM</span>
+          </li>
+          <li>
+            <a class="project-name" href="javascript:void(0)">Movie Atlas</a>
+            <span class="project-desc">Movie discovery platform with 10,000+ titles. 20% faster page loads via SSR; 66% reduced search latency via caching.</span>
+            <span class="project-stack">TypeScript Next.js TailwindCSS TMDB API</span>
+          </li>
+          <li>
+            <a class="project-name" href="javascript:void(0)">MedScan</a>
+            <span class="project-desc">Flask web app integrating PyTorch TorchXRayVision for x-ray diagnosis. SQLite caching reduces repeat AI response time.</span>
+            <span class="project-stack">Python Flask PyTorch SQLite</span>
+          </li>
+        </ul>
+      </div>
     </div>
 
     <!-- Section 4: Skills & Contact -->
     <div class="section">
-      <div class="badge"><span class="icon"></span> Skills &amp; Contact</div>
-      <h2>Tech Stack &<br>Get In Touch</h2>
-      <div class="divider"></div>
-      <div class="skills-grid">
-        <span class="skill-pill">Java</span>
-        <span class="skill-pill">Python</span>
-        <span class="skill-pill">TypeScript</span>
-        <span class="skill-pill">C / C++</span>
-        <span class="skill-pill">React</span>
-        <span class="skill-pill">Node.js</span>
-        <span class="skill-pill">Next.js</span>
-        <span class="skill-pill">Flask</span>
-        <span class="skill-pill">Spring Boot</span>
-        <span class="skill-pill">AWS</span>
-        <span class="skill-pill">Docker</span>
-        <span class="skill-pill">PostgreSQL</span>
-        <span class="skill-pill">MongoDB</span>
-        <span class="skill-pill">Git</span>
-        <span class="skill-pill">Jest</span>
-      </div>
-      <div class="contact-links">
-        <a class="contact-link" href="https://github.com/hiderrick" target="_blank" rel="noopener">GitHub</a>
-        <a class="contact-link" href="https://linkedin.com/in/chenderrick" target="_blank" rel="noopener">LinkedIn</a>
-        <a class="contact-link" href="mailto:derrickchen0201@gmail.com">Email</a>
-        <a class="contact-link" href="/derrick_chen_resume.pdf" target="_blank">Resume</a>
+      <div class="section-panel">
+        <div class="badge"><span class="icon"></span> Skills &amp; Contact</div>
+        <h2>Tech Stack &<br>Get In Touch</h2>
+        <div class="divider"></div>
+        <div class="skills-grid">
+          <span class="skill-pill">Java</span>
+          <span class="skill-pill">Python</span>
+          <span class="skill-pill">TypeScript</span>
+          <span class="skill-pill">C / C++</span>
+          <span class="skill-pill">React</span>
+          <span class="skill-pill">Node.js</span>
+          <span class="skill-pill">Next.js</span>
+          <span class="skill-pill">Flask</span>
+          <span class="skill-pill">Spring Boot</span>
+          <span class="skill-pill">AWS</span>
+          <span class="skill-pill">Docker</span>
+          <span class="skill-pill">PostgreSQL</span>
+          <span class="skill-pill">MongoDB</span>
+          <span class="skill-pill">Git</span>
+          <span class="skill-pill">Jest</span>
+        </div>
+        <div class="contact-links">
+          <a class="contact-link" href="https://github.com/hiderrick" target="_blank" rel="noopener">GitHub</a>
+          <a class="contact-link" href="https://linkedin.com/in/chenderrick" target="_blank" rel="noopener">LinkedIn</a>
+          <a class="contact-link" href="mailto:derrickchen0201@gmail.com">Email</a>
+          <a class="contact-link" href="/derrick_chen_resume.pdf" target="_blank">Resume</a>
+        </div>
       </div>
     </div>
 
@@ -689,10 +851,12 @@
 
   <!-- Finale -->
   <div class="finale">
-    <p class="overline"></p>
-    <h2>Let's<br>Connect !</h2>
-    <p></p>
-    <a class="cta" href="https://linkedin.com/in/chenderrick" target="_blank" rel="noopener">Say Hello</a>
+    <div class="finale-panel">
+      <p class="overline"></p>
+      <h2>Let's<br>Connect !</h2>
+      <p></p>
+      <a class="cta" href="https://linkedin.com/in/chenderrick" target="_blank" rel="noopener">Say Hello</a>
+    </div>
   </div>
 
   <script type="module" src="/scene.js"></script>

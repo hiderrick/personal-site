@@ -906,6 +906,18 @@ window.addEventListener('resize', () => {
 // ─── Animate ────────────────────────────────────────────────────────────────
 const clock = new THREE.Clock()
 const colliderPos = new THREE.Vector3(0, 5, 0) // reusable collider position
+let sceneReady = false
+
+function markSceneReady() {
+  if (sceneReady) return
+  sceneReady = true
+  if (window.setPortfolioLoadState) {
+    window.setPortfolioLoadState('ready')
+  } else {
+    document.body.classList.add('scene-ready')
+    document.querySelector('.site-loader')?.setAttribute('aria-hidden', 'true')
+  }
+}
 
 async function animate() {
   const dt = Math.min(clock.getDelta(), 0.05)
@@ -1016,6 +1028,7 @@ async function animate() {
   }
 
   renderPipeline.render()
+  markSceneReady()
   stats.update()
 }
 renderer.setAnimationLoop(animate)
