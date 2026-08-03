@@ -34,7 +34,6 @@ import { gaussianBlur } from 'three/examples/jsm/tsl/display/GaussianBlurNode.js
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import Stats from 'stats-gl'
 import * as easings from 'eases-jsnext'
-import { WaterPlane } from './WaterPlane.js'
 
 
 // ─── Params ─────────────────────────────────────────────────────────────────
@@ -396,38 +395,6 @@ farOcean.position.y = -0.45
 farOcean.receiveShadow = true
 farOcean.name = 'farOcean'
 scene.add(farOcean)
-
-// Interactive water plane
-const waterCenter = new THREE.Vector3(0, -0.18, -3)
-let waterPlane = null
-let deferredInitDone = false
-function deferredInit() {
-  if (deferredInitDone) return
-  deferredInitDone = true
-  const waterRes = qualityTier === 'low' ? 64 : 128
-  waterPlane = new WaterPlane(scene, renderer, {
-    sizeX: 80, sizeZ: 80, center: waterCenter,
-    color: '#0088dd', metalness: 0.05, roughness: 0.08,
-    fresnelBias: 0.25, fresnelPower: 1.5, fresnelScale: 1.2,
-    resolution: waterRes, viscosity: 0.6, damping: 0, speed: 0.97,
-    mouseDeep: 0.04, mouseSize: 1.2, colliderStrength: 0.002,
-    noiseAmplitude: 0.117, noiseFrequency: 4, noiseSpeed: 1.2,
-  })
-}
-
-// Mouse tracking
-const mouseNDC = new THREE.Vector2(9999, 9999)
-const mouseNDCIdle = new THREE.Vector2(9999, 9999) // reusable idle vector
-let mouseActive = false
-window.addEventListener('pointermove', (e) => {
-  mouseNDC.x = (e.clientX / innerWidth) * 2 - 1
-  mouseNDC.y = -(e.clientY / innerHeight) * 2 + 1
-  mouseActive = true
-})
-window.addEventListener('pointerleave', () => {
-  mouseNDC.set(9999, 9999)
-  mouseActive = false
-})
 
 // ─── Helper: Create an island (kept as live meshes — they're large & few) ───
 function createIsland(x, z, radius, height = 1.2, grassColor) {
@@ -1013,19 +980,6 @@ async function animate() {
   }
 
   camera.updateMatrixWorld()
-
-  if (!deferredInitDone && qualityDetected) {
-    deferredInit()
-  }
-
-  // Water compute — throttled on lower tiers
-  if (waterPlane) {
-    const shouldUpdateWater = qualityTier === 'high' || (qualityTier === 'medium' && frameCount % 2 === 0) || (qualityTier === 'low' && frameCount % 2 === 0)
-    if (shouldUpdateWater) {
-      const mouseInput = (qualityTier === 'low' || !mouseActive) ? mouseNDCIdle : mouseNDC
-      waterPlane.update(mouseInput, camera, colliderPos, 0)
-    }
-  }
 
   renderPipeline.render()
   markSceneReady()
