@@ -332,13 +332,13 @@
       text-align: left;
     }
 
-    .job-list li {
+    .job-list > li {
       margin-bottom: 1.4rem;
       padding-bottom: 1.4rem;
       border-bottom: 1px solid rgba(255,255,255,0.1);
     }
 
-    .job-list li:last-child {
+    .job-list > li:last-child {
       border-bottom: none;
       margin-bottom: 0;
     }
@@ -358,11 +358,20 @@
       margin-bottom: 0.45rem;
     }
 
-    .job-note {
-      display: block;
+    .job-bullets {
+      padding-left: 1.2rem;
+      margin-top: 0.35rem;
+    }
+
+    .job-bullets li {
       font-size: 0.98rem;
       line-height: 1.65;
       color: var(--cream-dim);
+      margin-bottom: 0.35rem;
+    }
+
+    .job-bullets li:last-child {
+      margin-bottom: 0;
     }
 
     .incoming-badge {
@@ -608,7 +617,7 @@
 
       .job-role { font-size: 1rem; }
       .job-meta { font-size: 0.85rem; }
-      .job-note { font-size: 0.9rem; line-height: 1.6; }
+      .job-bullets li { font-size: 0.9rem; line-height: 1.6; }
 
       .project-name { font-size: 1rem; }
       .project-desc { font-size: 0.9rem; line-height: 1.6; }
@@ -744,7 +753,7 @@
         <div class="divider"></div>
         <p>
           Georgia Institute of Technology BS Computer Science<br>
-          Expected December 2027 | GPA 3.70<br><br>
+          Expected December 2027<br><br>
         </p>
         <ul class="tag-list">
           <li>Coca-Cola First Generation Scholar</li>
@@ -766,23 +775,39 @@
         <ul class="job-list">
 
           <li>
-            <span class="job-role">Software Engineer Intern <span class="incoming-badge">Incoming</span></span>
-            <span class="job-meta">Walmart Global Tech Bentonville, AR Summer 2026</span>
+            <span class="job-role">Software Engineer Co-Op <span class="incoming-badge">Incoming</span></span>
+            <span class="job-meta">IBM · San Jose, CA · Fall 2026</span>
+            <ul class="job-bullets">
+              <li>Incoming for Fall 2026 cohort (AI compliance at scale).</li>
+            </ul>
           </li>
           <li>
-            <span class="job-role">Software Developer Intern <span class="incoming-badge">Incoming</span></span>
-            <span class="job-meta">IBM San Jose, CA Fall 2026</span>
+            <span class="job-role">Software Engineer Intern</span>
+            <span class="job-meta">Walmart · Bentonville, AR · June 2026 - Aug 2026</span>
+            <ul class="job-bullets">
+              <li>Designed an event-driven stocking confirmation flow processing 3,000+ requests per minute, replacing inventory guesswork with real-time stocking updates and saving a store hundreds of thousands annually.</li>
+              <li>Implemented the backend with Java, Spring Boot, and Apache Kafka, including event mapping, validation, and publishing logic with 90%+ code coverage.</li>
+              <li>Built a Grafana and Prometheus/Apache JMeter dashboard tracking p95/p99 latency, HTTP throughput, Kafka publish rates, and CPU/heap utilization to monitor production metrics.</li>
+            </ul>
           </li>
 
           <li>
             <span class="job-role">Software Engineer Intern</span>
-            <span class="job-meta">BigID Atlanta, GA June Aug 2025</span>
-            <span class="job-note">Built ETL pipelines in Node.js for AWS Security Lake, reducing data ingestion time by 100x. Achieved 80%+ Jest test coverage.</span>
+            <span class="job-meta">BigID · Atlanta, GA · June 2025 - Aug 2025</span>
+            <ul class="job-bullets">
+              <li>Developed an integration for BigID customers to stream DSPM cases into AWS Security Lake using IAM and S3, allowing customers to centralize DSPM data within their AWS environments.</li>
+              <li>Built the backend in Node.js, using ETL pipelines instead of RESTful APIs to handle terabytes of security data and cut ingestion time by over 100x (hours to minutes).</li>
+              <li>Wrote Jest unit tests achieving 80%+ code coverage and built end-to-end integration tests for DSPM-AWS workflows; used Jenkins to manage test environments and automate cloud deployments.</li>
+            </ul>
           </li>
           <li>
             <span class="job-role">Undergraduate Researcher</span>
-            <span class="job-meta">GROWER Research Lab Atlanta, GA Aug Dec 2024</span>
-            <span class="job-note">Scraped &amp; analyzed 1M+ power outage records with Python/Pandas; collaborated with Oak Ridge National Laboratory.</span>
+            <span class="job-meta">GROWER Research Lab · Atlanta, GA · Aug 2024 - Dec 2024</span>
+            <ul class="job-bullets">
+              <li>Wrote Python scripts to web scrape power outage data from 13+ sources, expanding the team's dataset coverage by 15% of U.S. states.</li>
+              <li>Cleaned and analyzed datasets with 1M+ records, enabling analysis in emergency response, public investments, and public policy.</li>
+              <li>Collaborated on a subteam of six using Agile methodologies such as daily standups, sprint planning, and pair programming while partnering with Oak Ridge National Laboratory.</li>
+            </ul>
           </li>
 
         </ul>
@@ -802,14 +827,9 @@
             <span class="project-stack">TypeScript React Node.js AWS PostgreSQL Drizzle ORM</span>
           </li>
           <li>
-            <a class="project-name" href="javascript:void(0)">Movie Atlas</a>
-            <span class="project-desc">Movie discovery platform with 10,000+ titles. 20% faster page loads via SSR; 66% reduced search latency via caching.</span>
-            <span class="project-stack">TypeScript Next.js TailwindCSS TMDB API</span>
-          </li>
-          <li>
-            <a class="project-name" href="javascript:void(0)">MedScan</a>
-            <span class="project-desc">Flask web app integrating PyTorch TorchXRayVision for x-ray diagnosis. SQLite caching reduces repeat AI response time.</span>
-            <span class="project-stack">Python Flask PyTorch SQLite</span>
+            <a class="project-name" href="https://ask-the-ref.com" target="_blank" rel="noopener">Ask the Ref</a>
+            <span class="project-desc">NBA rules verification engine averaging 1.6K monthly users and visits. A hybrid RAG pipeline combines vector similarity and full-text search across semantically chunked NBA rules to turn natural-language basketball scenarios into legal or illegal verdicts.</span>
+            <span class="project-stack">Python FastAPI Next.js TypeScript PostgreSQL pgvector</span>
           </li>
         </ul>
       </div>
