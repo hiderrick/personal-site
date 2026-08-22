@@ -437,6 +437,22 @@
       font-weight: 600;
     }
 
+    .project-link {
+      display: inline-block;
+      margin-top: 0.55rem;
+      color: white;
+      font-size: 0.84rem;
+      font-weight: 700;
+      text-decoration: underline;
+      text-underline-offset: 0.2em;
+      pointer-events: auto;
+      transition: opacity 0.2s;
+    }
+
+    .project-link:hover {
+      opacity: 0.75;
+    }
+
     /* -- Skills grid -- */
     .skills-grid {
       display: flex;
@@ -622,6 +638,7 @@
       .project-name { font-size: 1rem; }
       .project-desc { font-size: 0.9rem; line-height: 1.6; }
       .project-stack { font-size: 0.78rem; }
+      .project-link { font-size: 0.78rem; }
 
       .skill-pill { font-size: 0.78rem; padding: 0.3em 0.8em; }
       .tag-list li { font-size: 0.78rem; padding: 0.3em 0.8em; }
@@ -822,14 +839,16 @@
         <div class="divider"></div>
         <ul class="project-list">
           <li>
-            <a class="project-name" href="https://gtnotes.org" target="_blank" rel="noopener">GT Notes</a>
-            <span class="project-desc">Fullstack note-sharing web app with 480+ users. JWT + OAuth 2.0 auth, PostgreSQL schema, AWS S3 file storage.</span>
-            <span class="project-stack">TypeScript React Node.js AWS PostgreSQL Drizzle ORM</span>
-          </li>
-          <li>
             <a class="project-name" href="https://ask-the-ref.com" target="_blank" rel="noopener">Ask the Ref</a>
             <span class="project-desc">NBA rules verification engine averaging 1.6K monthly users and visits. A hybrid RAG pipeline combines vector similarity and full-text search across semantically chunked NBA rules to turn natural-language basketball scenarios into legal or illegal verdicts.</span>
             <span class="project-stack">Python FastAPI Next.js TypeScript PostgreSQL pgvector</span>
+            <a class="project-link" href="https://ask-the-ref.com" target="_blank" rel="noopener">Visit ask-the-ref.com ↗</a>
+          </li>
+          <li>
+            <a class="project-name" href="https://gtnotes.org" target="_blank" rel="noopener">GT Notes</a>
+            <span class="project-desc">Fullstack note-sharing web app with 480+ users. JWT + OAuth 2.0 auth, PostgreSQL schema, AWS S3 file storage.</span>
+            <span class="project-stack">TypeScript React Node.js AWS PostgreSQL Drizzle ORM</span>
+            <a class="project-link" href="https://gtnotes.org" target="_blank" rel="noopener">Visit gtnotes.org ↗</a>
           </li>
         </ul>
       </div>
