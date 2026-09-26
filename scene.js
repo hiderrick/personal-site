@@ -1,10 +1,8 @@
 import * as THREE from 'three/webgpu'
 import {
   uniform,
-  float,
   vec2,
   vec4,
-  color,
   uv,
   mix,
   pass,
@@ -19,11 +17,6 @@ import {
   sample,
   metalness,
   roughness,
-  positionWorld,
-  fract,
-  abs,
-  max,
-  step,
   convertToTexture,
 } from 'three/tsl'
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
@@ -298,7 +291,6 @@ const roofMats = [makeLambert('#e85050'), makeLambert('#5080e8'), makeLambert('#
 const signMat = makeLambert('#f5e8b0')
 const cloudMat = makeLambert('#ffffff')
 const accentMats = [makeLambert('#ff5078'), makeLambert('#ffaa40'), makeLambert('#60b8ff'), makeLambert('#b070ff'), makeLambert('#40e890')]
-const groundMat = makeMat('#80c860', 0.95)
 const oceanMat = new THREE.MeshStandardMaterial({ color: '#0078cc', roughness: 0.12, metalness: 0.1, transparent: true, opacity: 0.9 })
 
 // Additional lambert materials for small details
@@ -683,17 +675,15 @@ const cloudInstancedMesh = new THREE.InstancedMesh(sphereGeo, cloudMat, totalClo
 cloudInstancedMesh.castShadow = false
 cloudInstancedMesh.receiveShadow = false
 
-const cloudInstanceData = [] // per cloud: { baseX, baseY, speed, drift, indices[] }
+const cloudInstanceData = []
 const _cm = new THREE.Matrix4()
 const _cq = new THREE.Quaternion()
-const _tmpPos = new THREE.Vector3()
-const _tmpScale = new THREE.Vector3()
 let cloudIdx = 0
 
 for (let c = 0; c < cloudDefs.length; c++) {
   const cd = cloudDefs[c]
   const s = cd.s
-  const indices = []
+  const instances = []
   for (const sub of cloudSubParts) {
     _cm.compose(
       new THREE.Vector3(cd.x + sub.ox * s, cd.y + sub.oy * s, cd.z + sub.oz * s),
@@ -701,17 +691,17 @@ for (let c = 0; c < cloudDefs.length; c++) {
       new THREE.Vector3(sub.sx * s, sub.sy * s, sub.sz * s)
     )
     cloudInstancedMesh.setMatrixAt(cloudIdx, _cm)
-    indices.push(cloudIdx)
+    instances.push({
+      offset: cloudIdx * 16,
+      x: cd.x + sub.ox * s,
+      y: cd.y + sub.oy * s,
+    })
     cloudIdx++
   }
   cloudInstanceData.push({
-    baseX: cd.x,
-    baseY: cd.y,
-    defZ: cd.z,
     speed: 0.15 + Math.random() * 0.2,
     drift: Math.random() * Math.PI * 2,
-    indices,
-    s,
+    instances,
   })
 }
 cloudInstancedMesh.instanceMatrix.needsUpdate = true
@@ -753,7 +743,7 @@ for (let i = 0; i < seaFloaterCount; i++) {
   seaFloaterColors[i * 3 + 2] = _fc.b
 
   seaFloaterData.push({
-    x: bx, z: bz, baseY, s,
+    baseY,
     amplitude: 0.1 + Math.random() * 0.1,
     speed: 0.6 + Math.random() * 0.8,
     phase: Math.random() * 6,
@@ -762,6 +752,15 @@ for (let i = 0; i < seaFloaterCount; i++) {
 seaFloaterMesh.instanceColor = new THREE.InstancedBufferAttribute(seaFloaterColors, 3)
 seaFloaterMesh.instanceMatrix.needsUpdate = true
 scene.add(seaFloaterMesh)
+
+// Only bouncing meshes change their object transforms after scene construction.
+// Instance animations update their buffers directly, so their mesh transforms are static.
+const animatedMeshes = new Set(bouncingObjects.map(({ mesh }) => mesh))
+scene.traverse((object) => {
+  if (animatedMeshes.has(object)) return
+  object.updateMatrix()
+  object.matrixAutoUpdate = false
+})
 
 // ─── Scroll-driven camera path ──────────────────────────────────────────────
 const waypoints = [
@@ -781,13 +780,12 @@ let finaleTop = 0
 
 function updateSectionOffsets() {
   const scrollY = window.scrollY
-  sectionTops = Array.from(allSections).map(el => el.getBoundingClientRect().top + scrollY)
+  sectionTops = Array.from(allSections, el => el.getBoundingClientRect().top + scrollY)
   finaleTop = finaleEl.getBoundingClientRect().top + scrollY
 }
 updateSectionOffsets()
 
 // Smooth camera interpolation state
-let currentWaypoint = 0
 let targetWaypoint = 0
 let camTransitionStart = 0
 let camTransitionProgress = 1
@@ -797,9 +795,6 @@ const camPosFrom = new THREE.Vector3()
 const camPosTo = new THREE.Vector3()
 const camTargetFrom = new THREE.Vector3()
 const camTargetTo = new THREE.Vector3()
-
-const camPosGoal = new THREE.Vector3().set(...waypoints[0].pos)
-const camTargetGoal = new THREE.Vector3().set(...waypoints[0].target)
 
 function ease(t) {
   return (easings[params.cameraEase] || easings.cubicInOut)(t)
@@ -818,12 +813,10 @@ function updateCameraProgress() {
 
   if (newWP !== targetWaypoint) {
     // Capture current un-swayed position to avoid sway offset leaking into the transition start
-    camPosFrom.copy(camPosGoal).lerp(camPos, 1) // use where camPos actually is
     camPosFrom.copy(camPos)
     camTargetFrom.copy(camTarget)
     camPosTo.set(...waypoints[newWP].pos)
     camTargetTo.set(...waypoints[newWP].target)
-    currentWaypoint = targetWaypoint
     targetWaypoint = newWP
     camTransitionStart = performance.now() / 1000
     camTransitionProgress = 0
@@ -872,7 +865,6 @@ window.addEventListener('resize', () => {
 
 // ─── Animate ────────────────────────────────────────────────────────────────
 const clock = new THREE.Clock()
-const colliderPos = new THREE.Vector3(0, 5, 0) // reusable collider position
 let sceneReady = false
 
 function markSceneReady() {
@@ -950,31 +942,20 @@ async function animate() {
     for (const c of cloudInstanceData) {
       const dx = Math.sin(t * c.speed + c.drift) * 1.5
       const dy = Math.sin(t * c.speed * 0.7 + c.drift + 1) * 0.3
-      for (let j = 0; j < c.indices.length; j++) {
-        const sub = cloudSubParts[j]
-        const idx = c.indices[j]
-        _tmpPos.set(
-          c.baseX + sub.ox * c.s + dx,
-          c.baseY + sub.oy * c.s + dy,
-          c.defZ + sub.oz * c.s
-        )
-        _tmpScale.set(sub.sx * c.s, sub.sy * c.s, sub.sz * c.s)
-        _cm.compose(_tmpPos, _cq, _tmpScale)
-        cloudInstancedMesh.setMatrixAt(idx, _cm)
+      // Scale, rotation and Z stay fixed; update only the translation components.
+      const matrices = cloudInstancedMesh.instanceMatrix.array
+      for (const instance of c.instances) {
+        matrices[instance.offset + 12] = instance.x + dx
+        matrices[instance.offset + 13] = instance.y + dy
       }
     }
     cloudInstancedMesh.instanceMatrix.needsUpdate = true
-  }
-
-  // Sea floaters (instanced) — throttled on low tier
-  if (qualityTier !== 'low' || frameCount % 3 === 0) {
+    // Sea floaters use the same update cadence; only their Y position changes.
+    const floaterMatrices = seaFloaterMesh.instanceMatrix.array
     for (let i = 0; i < seaFloaterCount; i++) {
       const sf = seaFloaterData[i]
       const y = sf.baseY + Math.sin(t * sf.speed + sf.phase) * sf.amplitude
-      _tmpPos.set(sf.x, y, sf.z)
-      _tmpScale.set(sf.s, sf.s, sf.s)
-      _fm.compose(_tmpPos, _cq, _tmpScale)
-      seaFloaterMesh.setMatrixAt(i, _fm)
+      floaterMatrices[i * 16 + 13] = y
     }
     seaFloaterMesh.instanceMatrix.needsUpdate = true
   }

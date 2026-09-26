@@ -40,8 +40,8 @@ export class WaterPlane {
   #raycastMesh
   #raycaster
   #pingPong
-  #dispatchX
-  #dispatchZ
+  #dispatch
+  #intersections = []
 
   constructor(
     scene,
@@ -79,8 +79,7 @@ export class WaterPlane {
     const resZ = Math.ceil(((sizeZ / maxDim) * resolution) / WORKGROUP_SIZE) * WORKGROUP_SIZE
     this.resX = resX
     this.resZ = resZ
-    this.#dispatchX = resX / WORKGROUP_SIZE
-    this.#dispatchZ = resZ / WORKGROUP_SIZE
+    this.#dispatch = [resX / WORKGROUP_SIZE, resZ / WORKGROUP_SIZE, 1]
 
     // ─── Uniforms ──────────────────────────────────────────────────────────────
     const readFromA = uniform(1)
@@ -289,7 +288,9 @@ export class WaterPlane {
   update(mouseNDC, camera, colliderPosition, colliderRadius) {
     // Raycast mouse against water plane
     this.#raycaster.setFromCamera(mouseNDC, camera)
-    const intersects = this.#raycaster.intersectObject(this.#raycastMesh)
+    const intersects = this.#intersections
+    intersects.length = 0
+    this.#raycaster.intersectObject(this.#raycastMesh, true, intersects)
     if (intersects.length > 0) {
       const pt = intersects[0].point
       const localX = pt.x - this.center.x
@@ -306,12 +307,11 @@ export class WaterPlane {
     this.#colliderRadiusU.value = colliderRadius
 
     // Ping-pong compute
-    const dispatch = [this.#dispatchX, this.#dispatchZ, 1]
     if (this.#pingPong === 0) {
-      this.#renderer.compute(this.#computeHeightAtoB, dispatch)
+      this.#renderer.compute(this.#computeHeightAtoB, this.#dispatch)
       this.readFromA.value = 0
     } else {
-      this.#renderer.compute(this.#computeHeightBtoA, dispatch)
+      this.#renderer.compute(this.#computeHeightBtoA, this.#dispatch)
       this.readFromA.value = 1
     }
     this.#pingPong = 1 - this.#pingPong
