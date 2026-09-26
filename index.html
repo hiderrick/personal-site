@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,7 +7,7 @@
   <title>Derrick Chen Software Engineer</title>
   <meta name="description" content="Derrick Chen Software Engineer & Georgia Tech CS student. Portfolio featuring experience at BigID, IBM, and Walmart Global Tech.">
   <style>
-    * { margin: 0; padding: 0; outline: none !important; box-sizing: border-box; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     canvas { display: block; outline: none !important; }
   </style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -41,6 +41,30 @@
       font-family: 'Quicksand', sans-serif;
       font-weight: 400;
       overflow-x: hidden;
+    }
+
+    a:focus-visible,
+    button:focus-visible {
+      outline: 3px solid white;
+      outline-offset: 4px;
+      box-shadow: 0 0 0 7px var(--dark);
+    }
+
+    /* -- Page scroll progress -- */
+    .scroll-progress {
+      position: fixed;
+      inset: 0 0 auto;
+      height: 6px;
+      z-index: 101;
+      background: #233d4c;
+      pointer-events: none;
+    }
+
+    .scroll-progress__fill {
+      height: 100%;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left center;
     }
 
     /* -- Loading screen -- */
@@ -134,7 +158,9 @@
 
     /* -- Splash -- */
     .splash {
-      height: 100vh;
+      min-height: 100vh;
+      min-height: 100svh;
+      padding: 6rem 1.2rem 8rem;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -197,26 +223,66 @@
       color: rgba(255, 255, 255, 0.9);
     }
 
-    .splash .scroll-hint {
-      margin-top: 3rem;
-      font-family: 'Quicksand', sans-serif;
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: white;
-      background: #f08090;
-      padding: 0.6em 2em;
+    /* Direction + plain-language links make each full-screen section discoverable. */
+    .scroll-cue {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      min-height: 48px;
+      max-width: 100%;
+      margin-top: 1.5rem;
+      padding: 0.75rem 1.25rem;
+      border: 1px solid rgba(255,255,255,0.55);
       border-radius: 30px;
-      cursor: pointer;
+      background: rgba(35, 61, 76, 0.94);
+      box-shadow: 0 6px 20px rgba(21,31,38,0.2);
+      color: white;
+      font-size: 0.9rem;
+      font-weight: 700;
+      line-height: 1.4;
+      text-decoration: none;
       pointer-events: auto;
-      border: none;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      transition: background 0.2s ease, border-color 0.2s ease;
     }
 
-    .splash .scroll-hint:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    .scroll-cue:hover {
+      background: #2f4e60;
+      border-color: white;
+    }
+
+    .scroll-cue svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    .scroll-cue--intro {
+      position: absolute;
+      bottom: max(1.5rem, env(safe-area-inset-bottom));
+      left: 50%;
+      transform: translateX(-50%);
+      width: max-content;
+      max-width: calc(100% - 2.4rem);
+      margin-top: 0;
+    }
+
+    /* A brief nudge after loading; the label and arrow remain without motion. */
+    body.scene-ready .scroll-cue--intro svg {
+      animation: scroll-nudge 1.6s ease-in-out 2;
+    }
+
+    @keyframes scroll-nudge {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(4px); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+
+      .scroll-cue { transition: none; }
+
+      body.scene-ready .scroll-cue--intro svg { animation: none; }
     }
 
     /* -- Sections -- */
@@ -228,6 +294,7 @@
 
     .section {
       min-height: 100vh;
+      min-height: 100svh;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -505,6 +572,7 @@
     /* -- Finale -- */
     .finale {
       min-height: 100vh;
+      min-height: 100svh;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -624,7 +692,7 @@
       }
 
       .section {
-        padding: 2.5rem 0;
+        padding: 5rem 0 2.5rem;
         margin-bottom: 1rem;
       }
 
@@ -699,7 +767,7 @@
       }
 
       .section {
-        padding: 2rem 0;
+        padding: 5rem 0 2rem;
       }
 
       .section-panel,
@@ -711,9 +779,43 @@
         font-size: clamp(2rem, 11vw, 3rem);
       }
     }
+
+    /* Keep the entry cue above the fold on short landscape screens. */
+    @media (max-height: 600px) and (min-width: 600px) {
+      .splash {
+        padding: 4.5rem 1.2rem;
+      }
+
+      .splash .avatar {
+        width: clamp(40px, 14svh, 64px);
+        height: clamp(40px, 14svh, 64px);
+        margin-bottom: 0.75rem;
+      }
+
+      .splash .overline,
+      .splash h1 {
+        margin-bottom: 0.75rem;
+      }
+
+      .splash h1 {
+        font-size: clamp(2rem, 8svh, 3rem);
+      }
+
+      .splash .subtitle {
+        font-size: 0.8rem;
+      }
+
+      .scroll-cue--intro {
+        bottom: max(1rem, env(safe-area-inset-bottom));
+      }
+    }
   </style>
 </head>
 <body>
+
+  <div class="scroll-progress" role="progressbar" aria-label="Page scroll progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+    <div class="scroll-progress__fill"></div>
+  </div>
 
   <div class="site-loader" role="status" aria-live="polite" aria-label="Loading 3D portfolio">
     <div class="site-loader__card">
@@ -766,19 +868,22 @@
   </nav>
 
   <!-- Splash -->
-  <section class="splash">
+  <section class="splash" id="top" tabindex="-1">
     <img class="avatar" src="/FloatingHead.png" alt="Derrick Chen">
     <p class="overline">Software Engineer</p>
     <h1>Derrick Chen<span>building things that sometimes work</span></h1>
     <p class="subtitle">Graduation: May 2028</p>
-    <button class="scroll-hint" onclick="document.querySelector('.sections .section').scrollIntoView({ behavior: 'smooth' })">Explore</button>
+    <a class="scroll-cue scroll-cue--intro" href="#about">
+      Scroll to explore
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 4v16m-6-6 6 6 6-6"/></svg>
+    </a>
   </section>
 
   <!-- Content sections -->
   <div class="sections">
 
     <!-- Section 1: About Me -->
-    <div class="section">
+    <div class="section" id="about" tabindex="-1">
       <div class="section-panel">
         <div class="badge"><span class="icon"></span> About Me</div>
         <h2>Student<br></h2>
@@ -796,10 +901,14 @@
           <li>Intramural Sports</li>
         </ul>
       </div>
+      <a class="scroll-cue" href="#experience">
+        Next: Experience
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 4v16m-6-6 6 6 6-6"/></svg>
+      </a>
     </div>
 
     <!-- Section 2: Experience -->
-    <div class="section">
+    <div class="section" id="experience" tabindex="-1">
       <div class="section-panel">
         <div class="badge"><span class="icon"></span> Experience</div>
         <h2>Where I've<br>Worked</h2>
@@ -844,10 +953,14 @@
 
         </ul>
       </div>
+      <a class="scroll-cue" href="#projects">
+        Next: Projects
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 4v16m-6-6 6 6 6-6"/></svg>
+      </a>
     </div>
 
     <!-- Section 3: Projects -->
-    <div class="section">
+    <div class="section" id="projects" tabindex="-1">
       <div class="section-panel">
         <div class="badge"><span class="icon"></span> Projects</div>
         <h2>What I've<br>Built</h2>
@@ -867,10 +980,14 @@
           </li>
         </ul>
       </div>
+      <a class="scroll-cue" href="#skills">
+        Next: Skills &amp; contact
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 4v16m-6-6 6 6 6-6"/></svg>
+      </a>
     </div>
 
     <!-- Section 4: Skills & Contact -->
-    <div class="section">
+    <div class="section" id="skills" tabindex="-1">
       <div class="section-panel">
         <div class="badge"><span class="icon"></span> Skills &amp; Contact</div>
         <h2>Tech Stack &<br>Get In Touch</h2>
@@ -899,20 +1016,63 @@
           <a class="contact-link" href="/derrick_chen_resume.pdf" target="_blank">Resume</a>
         </div>
       </div>
+      <a class="scroll-cue" href="#connect">
+        Next: Let's connect
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 4v16m-6-6 6 6 6-6"/></svg>
+      </a>
     </div>
 
   </div>
 
   <!-- Finale -->
-  <div class="finale">
+  <div class="finale" id="connect" tabindex="-1">
     <div class="finale-panel">
       <p class="overline"></p>
       <h2>Let's<br>Connect !</h2>
       <p></p>
       <a class="cta" href="https://linkedin.com/in/chenderrick" target="_blank" rel="noopener">Say Hello</a>
     </div>
+    <a class="scroll-cue" href="#top">
+      Back to top
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 20V4m-6 6 6-6 6 6"/></svg>
+    </a>
   </div>
 
+  <script>
+    (() => {
+      const progressBar = document.querySelector('.scroll-progress')
+      const progressFill = progressBar.querySelector('.scroll-progress__fill')
+      let framePending = false
+
+      function updateScrollProgress() {
+        framePending = false
+        const root = document.documentElement
+        const scrollRange = root.scrollHeight - root.clientHeight
+        const progress = scrollRange > 0
+          ? Math.min(1, Math.max(0, window.scrollY / scrollRange))
+          : 1
+
+        progressFill.style.transform = `scaleX(${progress})`
+        const percentage = String(Math.round(progress * 100))
+        if (progressBar.getAttribute('aria-valuenow') !== percentage) {
+          progressBar.setAttribute('aria-valuenow', percentage)
+        }
+      }
+
+      function scheduleProgressUpdate() {
+        if (framePending) return
+        framePending = true
+        window.requestAnimationFrame(updateScrollProgress)
+      }
+
+      window.addEventListener('scroll', scheduleProgressUpdate, { passive: true })
+      window.addEventListener('resize', scheduleProgressUpdate)
+      window.addEventListener('pageshow', scheduleProgressUpdate)
+      window.addEventListener('load', scheduleProgressUpdate)
+      new ResizeObserver(scheduleProgressUpdate).observe(document.body)
+      updateScrollProgress()
+    })()
+  </script>
   <script type="module" src="/scene.js"></script>
 </body>
 </html>
