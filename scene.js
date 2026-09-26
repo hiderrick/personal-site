@@ -70,14 +70,24 @@ const renderer = new THREE.WebGPURenderer({
   requiredLimits: { maxStorageBuffersInVertexStage: 2, maxColorAttachmentBytesPerSample: 64 },
 })
 renderer.setPixelRatio(1)
-renderer.setSize(innerWidth, innerHeight)
 renderer.shadowMap.enabled = true
 renderer.shadowMap.type = THREE.VSMShadowMap
 renderer.setClearColor(params.skyTopColor)
 renderer.toneMapping = THREE.AgXToneMapping
 renderer.toneMappingExposure = params.exposure
-renderer.domElement.style.cssText = 'position:fixed;top:0;left:0;z-index:-1;'
+renderer.domElement.classList.add('scene-canvas')
 document.body.appendChild(renderer.domElement)
+
+function resizeRenderer() {
+  const { clientWidth: width, clientHeight: height } = renderer.domElement
+  camera.aspect = width / height
+  camera.updateProjectionMatrix()
+  // CSS owns viewport coverage; only resize the drawing buffer here.
+  renderer.setSize(width, height, false)
+}
+resizeRenderer()
+// Observe before initialization so toolbar/orientation changes cannot be missed.
+new ResizeObserver(resizeRenderer).observe(renderer.domElement)
 await renderer.init()
 
 const skyTopColorU = uniform(new THREE.Color(params.skyTopColor))
@@ -856,9 +866,6 @@ window.addEventListener('keydown', (e) => {
 
 // ─── Resize ─────────────────────────────────────────────────────────────────
 window.addEventListener('resize', () => {
-  camera.aspect = innerWidth / innerHeight
-  camera.updateProjectionMatrix()
-  renderer.setSize(innerWidth, innerHeight)
   updateSectionOffsets()
   updateCameraProgress()
 })
